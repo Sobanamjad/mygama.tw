@@ -1,0 +1,22 @@
+AddType application/javascript .js
+AddType text/css .css
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Do not rewrite existing files
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # React internal news detail pages
+    # Example: /news/article-slug
+    RewriteRule ^news/.*$ /index.html [L]
+
+    # SPA fallback
+    RewriteRule ^ /index.html [L]
+</IfModule>
