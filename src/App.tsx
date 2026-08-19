@@ -2,20 +2,11 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import './news-pages.css';
 import NewsDetail from './NewsDetail';
-
-export type NewsItem = {
-  slug: string;
-  title: string;
-  link: string;
-  date: string;
-  description: string;
-  image?: string;
-  category: string;
-};
+import { fetchNews, type NewsItem } from './newsService';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false); // eslint-disable-line
   const [news, setNews] = useState<NewsItem[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
   const [newsError, setNewsError] = useState('');
@@ -23,44 +14,25 @@ function App() {
   const [visibleNewsCount, setVisibleNewsCount] = useState(12);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    const loadNews = async () => {
-      try {
-        setNewsLoading(true);
-        setNewsError('');
-
-        const response = await fetch('/api/news.php', {
-          cache: 'no-store',
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!data.success || !Array.isArray(data.news)) {
-          throw new Error('Invalid news response');
-        }
-
-        setNews(data.news.slice(0, 30));
-      } catch (error) {
-        console.error('News loading error:', error);
-        setNewsError('目前無法載入新聞，請稍後再試。');
-      } finally {
-        setNewsLoading(false);
+  const loadNews = async () => {
+    try {
+      setNewsLoading(true);
+      setNewsError('');
+      const data = await fetchNews();
+      if (!data.success || !Array.isArray(data.news)) {
+        throw new Error(data.message || 'Invalid news response');
       }
-    };
+      setNews(data.news);
+    } catch (error) {
+      console.error('News loading error:', error);
+      setNewsError('目前無法載入新聞，請稍後再試。');
+    } finally {
+      setNewsLoading(false);
+    }
+  };
 
-    loadNews();
-  }, []);
+  loadNews();
+}, []);
 
   const rssCategories = Array.from(
     new Set(news.map((item) => item.category).filter(Boolean))

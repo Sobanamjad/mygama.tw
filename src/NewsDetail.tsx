@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { NewsItem } from './App';
+import { fetchNewsArticle, fetchNews, type NewsItem } from './newsService';
 
 type NewsDetailItem = NewsItem & {
   content_html: string;
@@ -21,36 +21,23 @@ function NewsDetail({ slug }: NewsDetailProps) {
         setLoading(true);
         setError('');
 
-        const [detailResponse, listResponse] = await Promise.all([
-          fetch(`/api/news.php?slug=${encodeURIComponent(slug)}`, {
-            cache: 'no-store',
-          }),
-          fetch('/api/news.php', {
-            cache: 'no-store',
-          }),
+        const [detailData, listData] = await Promise.all([
+          fetchNewsArticle(slug),
+          fetchNews(),
         ]);
 
-        if (!detailResponse.ok) {
-          throw new Error(`HTTP ${detailResponse.status}`);
-        }
-
-        const detailData = await detailResponse.json();
-
         if (!detailData.success || !detailData.article) {
-          throw new Error('Article not found');
+          throw new Error(detailData.message || 'Article not found');
         }
 
-        setArticle(detailData.article);
+        setArticle(detailData.article as NewsDetailItem);
 
-        if (listResponse.ok) {
-          const listData = await listResponse.json();
-          if (listData.success && Array.isArray(listData.news)) {
-            setLatest(
-              listData.news
-                .filter((item: NewsItem) => item.slug !== slug)
-                .slice(0, 4)
-            );
-          }
+        if (listData.success && Array.isArray(listData.news)) {
+          setLatest(
+            listData.news
+              .filter((item) => item.slug !== slug)
+              .slice(0, 4)
+          );
         }
 
         document.title = `${detailData.article.title}｜瑞信徵信社`;
