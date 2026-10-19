@@ -15,8 +15,8 @@ AddType text/css .css
 
     # React internal news detail pages
     # Example: /news/article-slug
-    RewriteRule ^news/.*$ /index.html [L]
+    RewriteRule ^news/.*$ /frontend/index.html [L]
 
     # SPA fallback
-    RewriteRule ^ /index.html [L]
+    RewriteRule ^ /frontend/index.html [L]
 </IfModule>

@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  base: '/',
   server: {
     proxy: {
       // Local dev: /api/rss  →  https://chinanewscloud.com/api/v1/rss-news
@@ -12,5 +13,8 @@ export default defineConfig({
         rewrite: () => '/api/v1/rss-news',
       },
     },
+  },
+  build: {
+    outDir: 'dist',
   },
 })

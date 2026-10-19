@@ -12,17 +12,22 @@ export function AdminLogin({ onLogin }: AdminLoginProps) {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    const result = adminAuth.login(username, password);
-    if (result.success) {
-      onLogin();
-    } else {
-      setError(result.error || '登入失敗，請檢查帳號密碼');
+    try {
+      const result = await adminAuth.login(username, password);
+      if (result.success) {
+        onLogin();
+      } else {
+        setError(result.error || '登入失敗，請檢查帳號密碼');
+      }
+    } catch (err) {
+      setError('登入失敗，請稍後再試');
     }
+
     setLoading(false);
   };
 
