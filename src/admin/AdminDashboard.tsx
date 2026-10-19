@@ -14,7 +14,7 @@ export function AdminDashboard() {
   const renderContent = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <Dashboard />;
+        return <Dashboard onTabChange={setActiveTab} />;
       case 'menus':
         return <MenuManager />;
       case 'content':

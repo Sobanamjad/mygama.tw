@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { menuService, contentService, rssService, pageService, mediaService } from '../../services/adminService';
 
-export function Dashboard() {
+interface DashboardProps {
+  onTabChange: (tab: string) => void;
+}
+
+export function Dashboard({ onTabChange }: DashboardProps) {
   const [stats, setStats] = useState({
     menus: 0,
     contentSections: 0,
@@ -51,26 +55,14 @@ export function Dashboard() {
           <div className="admin-stat-label">媒體檔案</div>
         </div>
       </div>
-      
+
       <div className="admin-quick-actions">
         <h3>快速操作</h3>
         <div className="admin-actions-grid">
-          <a href="#admin" onClick={(e) => {
-            e.preventDefault();
-            (document.querySelector('[data-tab="menus"]') as HTMLElement)?.click();
-          }}>管理選單</a>
-          <a href="#admin" onClick={(e) => {
-            e.preventDefault();
-            (document.querySelector('[data-tab="content"]') as HTMLElement)?.click();
-          }}>編輯內容</a>
-          <a href="#admin" onClick={(e) => {
-            e.preventDefault();
-            (document.querySelector('[data-tab="rss"]') as HTMLElement)?.click();
-          }}>新增 RSS</a>
-          <a href="#admin" onClick={(e) => {
-            e.preventDefault();
-            (document.querySelector('[data-tab="pages"]') as HTMLElement)?.click();
-          }}>建立頁面</a>
+          <button onClick={() => onTabChange('menus')}>管理選單</button>
+          <button onClick={() => onTabChange('content')}>編輯內容</button>
+          <button onClick={() => onTabChange('rss')}>新增 RSS</button>
+          <button onClick={() => onTabChange('pages')}>建立頁面</button>
         </div>
       </div>
     </div>

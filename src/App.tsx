@@ -6,11 +6,12 @@ import NewsDetail from './NewsDetail';
 import { fetchNews, type NewsItem } from './newsService';
 import { AdminLogin } from './admin/AdminLogin';
 import { AdminDashboard } from './admin/AdminDashboard';
-import { 
-  adminAuth, 
-  menuService, 
+import {
+  adminAuth,
+  menuService,
   contentService,
-  type MenuItem 
+  pageService,
+  type MenuItem
 } from './services/adminService';
 
 function App() {
@@ -60,6 +61,11 @@ function App() {
   const pathname = decodeURIComponent(window.location.pathname);
   const isNewsDetail = pathname.startsWith('/news/');
 
+  // ===== CHECK FOR CUSTOM PAGE =====
+  const customPage = pathname.startsWith('/') && pathname !== '/' && !isNewsDetail && !isAdminRoute
+    ? pageService.getPage(pathname.replace(/^\//, '').replace(/\/$/, ''))
+    : null;
+
   // ===== ADMIN ROUTE =====
   if (isAdminRoute) {
     if (!isAdmin) {
@@ -72,6 +78,98 @@ function App() {
   if (isNewsDetail) {
     const slug = pathname.replace(/^\/news\//, '');
     return <NewsDetail slug={slug} />;
+  }
+
+  // ===== CUSTOM PAGE ROUTE =====
+  if (customPage) {
+    return (
+      <div className="app">
+        {/* ===== HEADER ===== */}
+        <header className={`header ${isScrolled ? 'header-scrolled' : ''}`}>
+          <div className="container header-container">
+            <a href="#home" className="logo">
+              {getContentField('footer', 'logo', '瑞信徵信社')}
+            </a>
+
+            <nav className="nav-desktop">
+              {headerMenu.map((item) => (
+                <a key={item.id} href={item.href}>
+                  {item.label}
+                </a>
+              ))}
+              <a href="#contact" className="btn-primary">
+                {getContentField('header', 'ctaText', '立即諮詢')}
+              </a>
+            </nav>
+
+            <button
+              className="menu-btn"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              ☰
+            </button>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <nav className="nav-mobile">
+              {headerMenu.map((item) => (
+                <a
+                  key={item.id}
+                  href={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </a>
+              ))}
+              <a
+                href="#contact"
+                className="btn-primary"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {getContentField('header', 'ctaText', '立即諮詢')}
+              </a>
+            </nav>
+          )}
+        </header>
+
+        {/* ===== CUSTOM PAGE CONTENT ===== */}
+        <section className="section custom-page">
+          <div className="container">
+            <div dangerouslySetInnerHTML={{ __html: customPage.content }} />
+          </div>
+        </section>
+
+        {/* ===== FOOTER ===== */}
+        <footer className="footer">
+          <div className="container footer-container">
+            <div className="footer-brand">
+              <p className="footer-logo">
+                {getContentField('footer', 'logo', '瑞信徵信社')}
+              </p>
+              <p className="footer-desc">
+                {getContentField('footer', 'desc', '提供婚姻徵信、商業調查與企業風險管理相關服務，協助個人與企業釐清資訊、降低風險。')}
+              </p>
+            </div>
+            <nav className="footer-nav">
+              {footerMenu.map((item) => (
+                <a key={item.id} href={item.href}>
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+          <div className="footer-bottom">
+            <p className="footer-disclaimer">
+              {getContentField('footer', 'disclaimer', '本網站內容為一般資訊與服務介紹，不構成法律意見。實際案件應依個別情況進行評估，必要時應諮詢專業律師。')}
+            </p>
+            <p className="footer-copy">
+              {getContentField('footer', 'copyright', '© 2026 瑞信徵信社 All Rights Reserved.')}
+            </p>
+          </div>
+        </footer>
+      </div>
+    );
   }
 
   // ===== LOAD NEWS =====

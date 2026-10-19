@@ -112,6 +112,22 @@ export const menuService = {
     if (menu) {
       menu.items.push(item);
       menuService.updateMenu(name, menu.items);
+
+      // Auto-create page for menu item if it's not a hash link
+      if (!item.href.startsWith('/#') && !item.href.startsWith('#')) {
+        const slug = item.href.replace(/^\//, '').replace(/\/$/, '');
+        if (slug && !pageService.getPage(slug)) {
+          pageService.createPage({
+            slug,
+            title: item.label,
+            description: `${item.label} 頁面`,
+            content: `<h1>${item.label}</h1><p>此頁面內容待編輯。</p>`,
+            metaTitle: item.label,
+            metaDescription: `${item.label} - 瑞信徵信社`,
+            isPublished: true
+          });
+        }
+      }
     }
   },
 

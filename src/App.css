@@ -5,6 +5,48 @@
   box-sizing: border-box;
 }
 
+/* ===== CUSTOM PAGE ===== */
+.custom-page {
+  padding: 120px 0 60px;
+  min-height: 60vh;
+}
+
+.custom-page h1 {
+  font-size: 2.5rem;
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+}
+
+.custom-page h2 {
+  font-size: 2rem;
+  color: var(--color-primary);
+  margin: 2rem 0 1rem;
+}
+
+.custom-page p {
+  margin-bottom: 1rem;
+  line-height: 1.8;
+}
+
+.custom-page ul,
+.custom-page ol {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.custom-page li {
+  margin-bottom: 0.5rem;
+}
+
+.custom-page a {
+  color: var(--color-gold);
+  text-decoration: none;
+}
+
+.custom-page a:hover {
+  text-decoration: underline;
+}
+
 body {
   font-family: 'Noto Sans TC', ui-sans-serif, system-ui, sans-serif;
   background-color: var(--color-background);

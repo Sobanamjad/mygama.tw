@@ -141,16 +141,17 @@ export function MenuManager() {
 
       <div className="admin-add-item">
         <h3>新增選單項目</h3>
+        <p className="admin-hint">💡 若連結不是錨點（如 /#section），系統會自動建立對應頁面</p>
         <div className="admin-add-form">
-          <input 
+          <input
             value={newItem.label}
             onChange={(e) => setNewItem({ ...newItem, label: e.target.value })}
             placeholder="名稱 (例如: 服務項目)"
           />
-          <input 
+          <input
             value={newItem.href}
             onChange={(e) => setNewItem({ ...newItem, href: e.target.value })}
-            placeholder="連結 (例如: /#services)"
+            placeholder="連結 (例如: /services 或 /#services)"
           />
           <button onClick={handleAddItem}>新增</button>
         </div>
